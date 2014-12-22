@@ -1,0 +1,109 @@
+﻿@{
+    ViewBag.Title = "Test Page";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Test</h2>
+
+<div id="testTableOutput" style="padding: 4px" data-bind="template: { name: 'testTable' }"></div>
+<button style="padding: 4px" id="createItem">Create Item</button>
+<div id="itemEditOutput" style="padding: 4px" data-bind="template: { name: 'addEdit' }"></div>
+
+<script id="colorDropDown" type="text/html">
+    <select id="col" data-bind="options: $root.colorArray,
+    value: ColorId,
+    optionsText: 'Name',
+    optionsValue: 'Id',
+    optionsCaption: 'Choose...'">
+    </select>
+</script>
+
+<script id="sizeDropDown" type="text/html">
+    <select id="siz" data-bind="options: $root.sizeArray,
+    value: SizeId,
+    optionsText: 'Name',
+    optionsValue: 'Id',
+    optionsCaption: 'Choose...'">
+    </select>
+</script>
+
+
+
+<script id="colorDropDownAddEdit" type="text/html">
+    <select id="colAddEdit" data-bind="options: $root.colorArray,
+    value: Color.Id,
+    optionsText: 'Name',
+    optionsValue: 'Id',
+    optionsCaption: 'Choose...'">
+    </select>
+</script>
+
+<script id="sizeDropDownAddEdit" type="text/html">
+    <select id="sizAddEdit" data-bind="options: $root.sizeArray,
+    value: Size.Id,
+    optionsText: 'Name',
+    optionsValue: 'Id',
+    optionsCaption: 'Choose...'">
+    </select>
+</script>
+
+<script id="addEdit" type="text/html">
+    
+    <hr />
+    <form data-bind="with: testItem">
+        <input type="hidden" name="id" id="id" data-bind="value: Id" />
+        <label for="description">Description</label>
+        <input type="text" name="description" id="description" required data-bind="value: Description" />
+        
+        <label for="colorDropDownOutput">Color:</label>
+        <span id="colorDropDownOutput" data-bind="template: { name: 'colorDropDownAddEdit' }"></span>
+
+        <label for="sizeDropDownOutput">Size:</label>
+        <span id="sizeDropDownOutput" data-bind="template: { name: 'sizeDropDownAddEdit' }"></span>
+        
+        
+        <input type="submit" id="saveItem" value="Submit" />
+        <input type="button" id="clearEdit" value="Cancel Edit" />
+    </form>
+</script>
+
+
+<script id="testTable" type="text/html">
+    <table style="padding: 4px">
+        <thead>
+            <tr>
+                <th>Color</th>
+                <th>Size</th>
+                <th>Description</th>
+                <th></th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody data-bind="foreach: lineItems">
+            <tr data-bind="attr: { 'data-id': Id }">
+                <td data-bind="template: { name: 'colorDropDown' }"></td>
+                <td data-bind="template: { name: 'sizeDropDown' }"></td>
+                <td data-bind="text: Description"></td>
+                <td>
+                    <button class="editItem">Edit</button></td>
+                <td>
+                    <button class="deleteItem">Delete</button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</script>
+
+<div id="dbgInfo" style="visibility: visible; padding: 4px" data-bind="text: debugInfo"></div>
+<div id="colInfo" style="visibility: visible; padding: 4px" data-bind="text: colorInfo"></div>
+<div id="sizInfo" style="visibility: visible; padding: 4px" data-bind="text: sizeInfo"></div>
+
+@section scripts{
+    <script type="text/javascript" src="~/Scripts/TestServer.js"></script>
+    <script>
+        var testServer = new TestServerModel('@Url.RouteUrl("DefaultApi", new { httproute = "", controller = "lineitems" })', '@Url.RouteUrl("DefaultApi", new { httproute = "", controller = "color" })', '@Url.RouteUrl("DefaultApi", new { httproute = "", controller = "size" })');
+    </script>
+    <script type="text/javascript" src="~/Scripts/Test.ViewModel.js"></script>
+
+}
+

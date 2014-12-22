@@ -1,0 +1,101 @@
+﻿@{
+    ViewBag.Title = "Home Page";
+}
+<span id="vinscorespan1">&nbsp;</span> <input type="text" id="gcid"> <button id="btnVinScore">Get VinScore</button><br />
+
+<div id="videoTableOutput" style="padding: 4px" data-bind="template:{name: 'videoTable'}"></div>
+
+<button style="padding: 4px" id="createVideo">Create Video</button>
+
+<div id="videoEditOutput" style="padding: 4px" data-bind="template:{name: 'videoEdit'}"></div> 
+
+<div id="videoDropDownOutput" style="padding: 4px" data-bind="template:{name: 'videoDropDown'}"></div>
+
+<script id="videoTable" type="text/html">
+    <table style="padding: 4px">
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Length</th>
+                <th>Category</th>
+                <th></th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody data-bind="foreach: videos">
+            <tr data-bind="attr:{'data-id': Id}">
+                <td data-bind="text: Title"></td>
+                <td data-bind="text: Length"></td>
+                <td data-bind="text: Category"></td>
+                <td>
+                    <button class="editVideo">Edit</button></td>
+                <td>
+                    <button class="deleteVideo">Delete</button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</script>
+
+<script id="videoDropDown" type="text/html">
+    <select style="padding: 4px" data-bind="options: videos,
+         value: selectedValue,
+         optionsText: 'Title',
+         optionsValue: 'Id',
+         optionsCaption: 'Choose...'">
+    </select>
+</script>
+
+<script id="categoryDropDown" type="text/html">
+    <select name="cat" id="cat" data-bind="options: $parent.categoryArray,
+         value: Category.Id,
+         optionsText: 'Description',
+         optionsValue: 'Id',
+         optionsCaption: 'Choose....'" >
+    </select>
+</script>
+
+<script id="videoEdit" type="text/html">
+    <hr />
+    <form id="editform" data-bind="with: video">
+        <input type="hidden" name="id" id="id" data-bind="value: Id" />
+        <label for="title">Title:</label>
+        <input type="text" id="title" name="title"  data-bind="attr: { value: Title }" />
+        <label for="length">Length</label>
+        <input type="text" name="length" id="length" data-bind="value: Length" />
+        <label for="categoryDropDownOutput">Category:</label>
+        <span id="categoryDropDownOutput" data-bind="template: { name: 'categoryDropDown' }"></span>
+        <input type="submit" id="saveVideo" value="Submit" />
+        <input type="button" id="clearEdit" value="Cancel Edit" />
+    </form>
+</script>
+
+<button class="showbutton" style="padding: 4px" data-bind="visible: (selectedValue() != undefined)">Selected Value</button>
+
+<div id="dbgInfo" style="visibility:visible;padding: 4px" data-bind="text:debugInfo"></div>
+@section scripts{
+    <script type="text/javascript" src="~/Scripts/jQuery.VinSolutions.VinScore.js"></script>
+    <script type="text/javascript" src="~/Scripts/VideoServer.js"></script>
+    <script>
+        var videoServer = new VideoServer(
+            '@Url.RouteUrl("DefaultApi", new { httproute = "", controller = "videos" })',
+            '@Url.RouteUrl("DefaultApi", new { httproute = "", controller = "category" })');
+    </script>
+    <script type="text/javascript" src="~/Scripts/Video.ViewModel.js"></script>
+    <script type="text/javascript">
+        //$('#vinscorespan1').vinscore(1);
+        //$('#vinscorespan2').vinscore(2);
+        //$('#vinscorespan3').vinscore(3);
+        //$('#vinscorespan4').vinscore(4, { //passing all options in, but passing in the defaults. this shows how to change something if needed
+        //    baseUri: '/api/vinscore',
+        //    foreColor90Plus: '#008000', //green for score of 90 to 99
+        //    foreColor70To89: '#0000ff', //blue for score of 70 to 89
+        //    foreColor40To69: '#ffa500', //orange for score of 40 to 69
+        //    foreColor0To39: '#ff0000', //red for score of 0 to 39
+        //    foreColorDefault: '#000000', //black for scores that can't be determined or are null in the db
+        //    fontSizeDefault: 'x-large',
+        //    fontWeightDefault: 'bold',
+        //    defaultText: '??'
+        //});
+    </script>
+}

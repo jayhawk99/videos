@@ -1,0 +1,112 @@
+﻿@{
+    ViewBag.Title = "Search";
+}
+<div id="searchOutputDiv" style="padding: 4px" data-bind="template: { name: 'searchOutput' }"></div>
+<button id="showPreferences">Show Preference</button>
+<script id="categoryDropDown" type="text/html">
+    <select id="cat" data-bind="options: categoryArray,
+        value: CategoryId,
+        optionsText: 'Description',
+        optionsValue: 'Id',
+        optionsCaption: 'Choose...'">
+    </select>
+</script>
+<script id="colorDropDown" type="text/html">
+    <select id="col" data-bind="options: colorArray,
+        value: ColorId,
+        optionsText: 'Name',
+        optionsValue: 'Id',
+        optionsCaption: 'Choose...'">
+    </select>
+</script>
+<script id="sizeDropDown" type="text/html">
+    <select id="siz" data-bind="options: sizeArray,
+        value: SizeId,
+        optionsText: 'Name',
+        optionsValue: 'Id',
+        optionsCaption: 'Choose...'">
+    </select>
+</script>
+<script id="typeMulti" type="text/html">
+    <select id="typA" multiple="multiple" data-bind="options: typeArray,
+        selectedOptions: typeMultiArraySelected,
+        optionsText: 'Description',
+        optionsValue: 'Id',
+        optionsCaption: 'Choose...'">
+    </select>
+</script>
+<script id="typeRadioButton" type="text/html">
+        <div data-bind="foreach: typeArray">
+                @*Danger Will Robinson! value binding must precede checked binding in the radio button or else the button will not be pre-set on page load!*@
+                @*See "Notes for multiple bindings on a single element" here: http://knockoutjs.com/documentation/binding-syntax.html *@
+                @*Danger Will Robinson! value binding must be done through the attr construct as shown and not like this: 'data-bind="value: Id, checked: $parent.TypeId"'  ...not sure why though*@
+                <div>
+                    <input type="radio" class="rb" name="sometype" data-bind="attr: { value: Id }, checked: $parent.TypeId, checkedValue: Id" /><span data-bind="text: Description" />
+                </div>
+        </div>
+</script>
+<script id="typeCheckBox" type="text/html">
+		<div id="typeCheckboxDiv" data-bind="foreach: typeArray">
+			<div>
+				@*Danger Will Robinson! value binding must precede checked binding in the checkbox or else the box will not be pre-set on page load!*@
+				@*See "Notes for multiple bindings on a single element" here: http://knockoutjs.com/documentation/binding-syntax.html *@
+				<input type="checkbox" class="cb" name="someCheckboxType" data-bind="attr: { value: Id }, checked: $parent.checkedArray, checkedValue: Id" /><span data-bind="text: Description" />
+			</div>
+		</div>
+	</script>
+	<script id="searchOutput" type="text/html">
+		<hr />
+		<form>
+
+			<div style="padding: 10px">
+
+				<label for="categoryDropDownOutput">Category:</label>
+				<span id="categoryDropDownOutput" data-bind="template: { name: 'categoryDropDown' }"></span>
+
+				<label for="colorDropDownOutput">Color:</label>
+				<span id="colorDropDownOutput" data-bind="template: { name: 'colorDropDown' }"></span>
+
+				<label for="sizeDropDownOutput">Size:</label>
+				<span id="sizeDropDownOutput" data-bind="template: { name: 'sizeDropDown' }"></span>
+
+			</div>
+
+			<div style="padding: 10px">
+
+				<label for="multiOutput">Multi</label>
+				<span id="multiOutput" data-bind="template: { name: 'typeMulti' }"></span>
+
+			</div>
+
+			<div style="padding: 10px">
+
+				<label for="typeRadioButtonOutput">Type</label>
+				<span id="typeRadioButtonOutput" data-bind="template: { name: 'typeRadioButton' }"></span>
+
+			</div>
+
+			<div style="padding: 10px">
+
+				<label for="typeCheckBoxOutput">Type</label>
+				<span id="typeCheckBoxOutput" data-bind="template: { name: 'typeCheckBox' }"></span>
+
+			</div>
+
+		</form>
+	</script>
+
+	@section scripts{
+		<script type="text/javascript" src="~/Scripts/UserPreferenceServer.js"></script>
+		<script>
+			window.sserver = new SearchServerModel(
+				'@Url.RouteUrl("DefaultApi", new { httproute = "", controller = "category" })',
+				'@Url.RouteUrl("DefaultApi", new { httproute = "", controller = "color" })',
+				'@Url.RouteUrl("DefaultApi", new { httproute = "", controller = "size" })',
+				'@Url.RouteUrl("DefaultApi", new { httproute = "", controller = "type" })',
+				'@Url.RouteUrl("DefaultApi", new { httproute = "", controller = "userpreference" })'
+				);
+		</script>
+		<script type="text/javascript" src="~/Scripts/UserPreferenceSettings.js"></script>
+		<script type="text/javascript" src="~/Scripts/UserPreference.ViewModel.js"></script>
+	}
+
